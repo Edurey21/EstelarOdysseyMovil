@@ -20,7 +20,7 @@ const HomePage: React.FC<HomePageProps> = ({ onShowInformation, onShowGames }) =
           <Text style={styles.description}>
             Explora lo inexplorado, descubre nuevos mundos y civilizaciones, y lidera tu propia tripulación en Estelar Odyssey, el juego de simulación de exploración espacial más inmersivo. Aventuras intergalácticas te esperan.
           </Text>
-          <Image source={require('../images/image1.png')} style={styles.image} />
+          <Image source={require('../images/image1.jpg')} style={styles.image} />
         </View>
         <View style={styles.services}>
           <Text style={styles.sectionTitle}>Servicios que ofrecemos</Text>
@@ -57,7 +57,7 @@ const HomePage: React.FC<HomePageProps> = ({ onShowInformation, onShowGames }) =
           <Text style={styles.listItem}>- Exploración de mundos desconocidos</Text>
           <Text style={styles.listItem}>- Gestión de recursos y tripulación</Text>
           <View style={styles.imageContainer}>
-            <Image source={require('../images/image2.png')} style={styles.image} />
+            <Image source={require('../images/image2.jpg')} style={styles.image} />
           </View>
         </View>
         <Pressable style={styles.button} onPress={onShowInformation}>

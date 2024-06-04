@@ -19,9 +19,9 @@ const informationData = [
 ];
 
 const imageCarousel = [
-  require('../images/image1.png'),
-  require('../images/image2.png'),
-  require('../images/image3.png'), // Add more images as needed
+  require('../images/image1.jpg'),
+  require('../images/image2.jpg'),
+  require('../images/image3.jpg'), // Add more images as needed
 ];
 
 const featuresList = [

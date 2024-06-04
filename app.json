@@ -1,4 +1,11 @@
 {
   "name": "EstelarOdyssey",
-  "displayName": "EstelarOdyssey"
+  "displayName": "EstelarOdyssey",
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "aabf297b-fe64-4126-bbc2-e0735f658a67"
+      }
+    }
+  }
 }
