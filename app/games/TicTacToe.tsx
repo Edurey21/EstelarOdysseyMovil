@@ -1,17 +1,71 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Pressable } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert, Pressable } from 'react-native';
 
 const TicTacToe: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [isXNext, setIsXNext] = useState(true);
+  const [isSinglePlayer, setIsSinglePlayer] = useState(false);
+  const [showMenu, setShowMenu] = useState(true);
+
+  useEffect(() => {
+    if (isSinglePlayer && !isXNext) {
+      const aiMove = makeAIMove(board);
+      if (aiMove !== -1) {
+        handlePress(aiMove);
+      }
+    }
+  }, [isXNext]);
+
+  const makeAIMove = (board: string[]) => {
+    const emptyIndices = board.reduce((acc, val, idx) => (val === null ? [...acc, idx] : acc), []);
+    if (emptyIndices.length > 0) {
+      return emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+    }
+    return -1;
+  };
 
   const handlePress = (index: number) => {
     const newBoard = [...board];
-    if (!newBoard[index]) {
+    if (!newBoard[index] && !calculateWinner(newBoard)) {
       newBoard[index] = isXNext ? 'X' : 'O';
       setBoard(newBoard);
       setIsXNext(!isXNext);
+      const winner = calculateWinner(newBoard);
+      if (winner) {
+        Alert.alert(`El ganador es: ${winner}`, 'El juego se reiniciará.', [
+          { text: 'OK', onPress: resetGame },
+        ]);
+      } else if (newBoard.every(cell => cell !== null)) {
+        Alert.alert('Es un empate', 'El juego se reiniciará.', [
+          { text: 'OK', onPress: resetGame },
+        ]);
+      }
     }
+  };
+
+  const calculateWinner = (board: string[]) => {
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (let line of lines) {
+      const [a, b, c] = line;
+      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+        return board[a];
+      }
+    }
+    return null;
+  };
+
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setIsXNext(true);
   };
 
   const renderSquare = (index: number) => (
@@ -26,13 +80,45 @@ const TicTacToe: React.FC<{ navigation: any }> = ({ navigation }) => {
       style={styles.background}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Tic-Tac-Toe</Text>
-        <View style={styles.board}>
-          {board.map((_, index) => renderSquare(index))}
-        </View>
-        <Pressable style={styles.button} onPress={() => navigation.navigate('home')}>
-          <Text style={styles.buttonText}>Regresar</Text>
-        </Pressable>
+        {showMenu ? (
+          <>
+            <Text style={styles.title}>Selecciona el Modo de Juego</Text>
+            <Pressable
+              style={styles.button}
+              onPress={() => {
+                setIsSinglePlayer(true);
+                setShowMenu(false);
+              }}
+            >
+              <Text style={styles.buttonText}>1 Jugador</Text>
+            </Pressable>
+            <Pressable
+              style={styles.button}
+              onPress={() => {
+                setIsSinglePlayer(false);
+                setShowMenu(false);
+              }}
+            >
+              <Text style={styles.buttonText}>2 Jugadores</Text>
+            </Pressable>
+            <Pressable style={styles.button} onPress={() => navigation.navigate('home')}>
+              <Text style={styles.buttonText}>Regresar</Text>
+            </Pressable>
+          </>
+        ) : (
+          <>
+            <Text style={styles.title}>Tic-Tac-Toe</Text>
+            <View style={styles.board}>
+              {board.map((_, index) => renderSquare(index))}
+            </View>
+            <Pressable style={styles.button} onPress={resetGame}>
+              <Text style={styles.buttonText}>Reiniciar</Text>
+            </Pressable>
+            <Pressable style={styles.button} onPress={() => setShowMenu(true)}>
+              <Text style={styles.buttonText}>Regresar</Text>
+            </Pressable>
+          </>
+        )}
       </View>
     </ImageBackground>
   );
@@ -55,13 +141,20 @@ const styles = StyleSheet.create({
     textShadowColor: '#00ffcc',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 10,
+    marginBottom: 20,
   },
   board: {
-    width: 300,
-    height: 300,
+    width: 320,
+    height: 320,
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginVertical: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    padding: 10,
+    borderColor: '#00ffcc',
+    borderWidth: 2,
   },
   square: {
     width: '33.33%',
@@ -69,17 +162,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#fff',
+    borderColor: '#00ffcc',
   },
   squareText: {
-    fontSize: 32,
-    color: '#fff',
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#00ffcc',
+    textShadowColor: '#000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 5,
   },
   button: {
     marginTop: 20,
     padding: 15,
     borderRadius: 10,
-    backgroundColor: '#0d0d0d',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     borderColor: '#00ffcc',
     borderWidth: 2,
     alignItems: 'center',
@@ -92,9 +189,9 @@ const styles = StyleSheet.create({
     color: '#00ffcc',
     fontSize: 18,
     fontWeight: 'bold',
-    textShadowColor: '#00ffcc',
+    textShadowColor: '#000',
     textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 10,
+    textShadowRadius: 5,
   },
 });
 

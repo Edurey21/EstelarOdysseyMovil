@@ -17,13 +17,8 @@ const GamePage: React.FC<GamePageProps> = ({ navigation }) => {
     { name: 'Lights Out', image: require('../images/lights-out.jpg'), screen: 'LightsOut' },
     { name: 'Connect Four', image: require('../images/connect-four.jpg'), screen: 'ConnectFour' },
     { name: 'Concentration', image: require('../images/concentration.jpg'), screen: 'Concentration' },
-    { name: 'Pong', image: require('../images/pong.jpg'), screen: 'Pong' },
-    { name: 'Flappy Bird', image: require('../images/flappy-bird.jpg'), screen: 'FlappyBird' },
     { name: 'Sudoku', image: require('../images/sudoku.jpg'), screen: 'Sudoku' },
-    { name: 'Snake', image: require('../images/snake.jpg'), screen: 'SnakeGame' },
     { name: 'Memory', image: require('../images/memory.jpg'), screen: 'MemoryGame' },
-    { name: '2048', image: require('../images/2048.jpg'), screen: 'TwoZeroFourEight' },
-    { name: 'Minesweeper', image: require('../images/minesweeper.jpg'), screen: 'Minesweeper' },
   ];
 
   return (

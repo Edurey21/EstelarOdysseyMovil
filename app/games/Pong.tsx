@@ -1,44 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Pressable } from 'react-native';
 
 const Pong: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const [ballPosition, setBallPosition] = useState({ x: 0, y: 0 });
-  const [ballDirection, setBallDirection] = useState({ x: 1, y: 1 });
-  const [leftPaddlePosition, setLeftPaddlePosition] = useState(0);
-  const [rightPaddlePosition, setRightPaddlePosition] = useState(0);
+  const [grid, setGrid] = useState(Array(6).fill(Array(6).fill(null)));
+  const [currentColor, setCurrentColor] = useState('red');
+  const [score, setScore] = useState(0);
+
+  const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setBallPosition((prev) => ({
-        x: prev.x + ballDirection.x,
-        y: prev.y + ballDirection.y,
-      }));
-    }, 16);
-    return () => clearInterval(interval);
-  }, [ballDirection]);
+    setGrid(generateGrid());
+  }, []);
 
-  const handleTouch = (side: 'left' | 'right') => {
-    if (side === 'left') {
-      setLeftPaddlePosition(leftPaddlePosition + 10);
-    } else {
-      setRightPaddlePosition(rightPaddlePosition + 10);
-    }
+  const generateGrid = () => {
+    return Array(6)
+      .fill(null)
+      .map(() =>
+        Array(6)
+          .fill(null)
+          .map(() => colors[Math.floor(Math.random() * colors.length)])
+      );
+  };
+
+  const shootBubble = (row: number, col: number) => {
+    const newGrid = grid.map((rowArr, rowIndex) =>
+      rowArr.map((cell, colIndex) => {
+        if (rowIndex === row && colIndex === col && cell === currentColor) {
+          return null;
+        }
+        return cell;
+      })
+    );
+
+    setGrid(newGrid);
+    setScore(score + 1);
+    setCurrentColor(colors[Math.floor(Math.random() * colors.length)]);
   };
 
   return (
-    <ImageBackground
-      source={require('../images/background.jpg')}
-      style={styles.background}
-    >
+    <ImageBackground source={require('../images/background.jpg')} style={styles.background}>
       <View style={styles.container}>
-        <Text style={styles.title}>Pong</Text>
-        <View style={styles.board}>
-          <View style={[styles.paddle, { left: 0, top: leftPaddlePosition }]} />
-          <View style={[styles.paddle, { right: 0, top: rightPaddlePosition }]} />
-          <View style={[styles.ball, { left: ballPosition.x, top: ballPosition.y }]} />
+        <Text style={styles.title}>Bubble Shooter</Text>
+        <View style={styles.grid}>
+          {grid.map((row, rowIndex) => (
+            <View key={rowIndex} style={styles.row}>
+              {row.map((color, colIndex) => (
+                <TouchableOpacity
+                  key={colIndex}
+                  style={[styles.cell, { backgroundColor: color || 'transparent' }]}
+                  onPress={() => shootBubble(rowIndex, colIndex)}
+                />
+              ))}
+            </View>
+          ))}
         </View>
+        <Text style={styles.score}>Score: {score}</Text>
         <Pressable style={styles.button} onPress={() => navigation.navigate('home')}>
           <Text style={styles.buttonText}>Regresar</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={() => setGrid(generateGrid())}>
+          <Text style={styles.buttonText}>Reiniciar</Text>
         </Pressable>
       </View>
     </ImageBackground>
@@ -64,24 +85,24 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
     marginBottom: 20,
   },
-  board: {
+  grid: {
     width: 300,
-    height: 500,
-    backgroundColor: '#333',
-    position: 'relative',
+    height: 300,
   },
-  paddle: {
-    width: 10,
+  row: {
+    flexDirection: 'row',
+  },
+  cell: {
+    width: 50,
     height: 50,
-    backgroundColor: '#fff',
-    position: 'absolute',
+    margin: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  ball: {
-    width: 10,
-    height: 10,
-    backgroundColor: '#fff',
-    position: 'absolute',
-    borderRadius: 5,
+  score: {
+    fontSize: 24,
+    color: '#fff',
+    marginVertical: 10,
   },
   button: {
     marginTop: 20,

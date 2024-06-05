@@ -19,13 +19,8 @@ import Hangman from './app/games/Hangman';
 import LightsOut from './app/games/LightsOut';
 import ConnectFour from './app/games/ConnectFour';
 import Concentration from './app/games/Concentration';
-import Pong from './app/games/Pong';
-import FlappyBird from './app/games/FlappyBird';
 import Sudoku from './app/games/Sudoku';
-import SnakeGame from './app/games/SnakeGame';
 import MemoryGame from './app/games/MemoryGame';
-import TwoZeroFourEight from './app/games/TwoZeroFourEight';
-import Minesweeper from './app/games/Minesweeper';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<string>('home');
@@ -130,13 +125,8 @@ const App: React.FC = () => {
       {currentPage === 'LightsOut' && <LightsOut navigation={{ navigate: setCurrentPage }} />}
       {currentPage === 'ConnectFour' && <ConnectFour navigation={{ navigate: setCurrentPage }} />}
       {currentPage === 'Concentration' && <Concentration navigation={{ navigate: setCurrentPage }} />}
-      {currentPage === 'Pong' && <Pong navigation={{ navigate: setCurrentPage }} />}
-      {currentPage === 'FlappyBird' && <FlappyBird navigation={{ navigate: setCurrentPage }} />}
       {currentPage === 'Sudoku' && <Sudoku navigation={{ navigate: setCurrentPage }} />}
-      {currentPage === 'SnakeGame' && <SnakeGame navigation={{ navigate: setCurrentPage }} />}
       {currentPage === 'MemoryGame' && <MemoryGame navigation={{ navigate: setCurrentPage }} />}
-      {currentPage === 'TwoZeroFourEight' && <TwoZeroFourEight navigation={{ navigate: setCurrentPage }} />}
-      {currentPage === 'Minesweeper' && <Minesweeper navigation={{ navigate: setCurrentPage }} />}
     </SafeAreaView>
   );
 }

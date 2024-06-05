@@ -8,7 +8,6 @@ interface SuggestionFormProps {
 interface SuggestionFormState {
   nombre: string;
   apellido: string;
-  email: string;
   planeta: string;
   nave: string;
   mision: string;
@@ -19,7 +18,6 @@ const SuggestionForm: React.FC<SuggestionFormProps> = ({ onSubmit }) => {
   const [form, setForm] = useState<SuggestionFormState>({
     nombre: '',
     apellido: '',
-    email: '',
     planeta: '',
     nave: '',
     mision: '',
@@ -38,7 +36,6 @@ const SuggestionForm: React.FC<SuggestionFormProps> = ({ onSubmit }) => {
     setForm({
       nombre: '',
       apellido: '',
-      email: '',
       planeta: '',
       nave: '',
       mision: '',
@@ -61,13 +58,6 @@ const SuggestionForm: React.FC<SuggestionFormProps> = ({ onSubmit }) => {
         placeholderTextColor="#00ffcc"
         value={form.apellido}
         onChangeText={(value) => handleChange('apellido', value)}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#00ffcc"
-        value={form.email}
-        onChangeText={(value) => handleChange('email', value)}
       />
       <TextInput
         style={styles.input}
@@ -107,9 +97,10 @@ const SuggestionForm: React.FC<SuggestionFormProps> = ({ onSubmit }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    width: '100%',
   },
   input: {
-    height: 40,
+    height: 50,
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 12,
@@ -117,9 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#0d0d0d',
     color: '#ffffff',
-    textShadowColor: '#00ffcc',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 5,
+    fontSize: 18,
   },
   button: {
     marginTop: 10,

@@ -44,12 +44,6 @@ const AdministradorLoginPage: React.FC<AdministradorLoginPageProps> = ({ onBack,
         <Pressable style={styles.button} onPress={onBack}>
           <Text style={styles.buttonText}>Regresar</Text>
         </Pressable>
-        <Text style={styles.text}>
-          ¿No tienes una cuenta?{' '}
-          <Text onPress={onRegister} style={styles.link}>
-            Regístrate aquí
-          </Text>
-        </Text>
       </View>
     </ImageBackground>
   );

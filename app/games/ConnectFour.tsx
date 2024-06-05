@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Pressable } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Pressable, Alert } from 'react-native';
 
 const ConnectFour: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [board, setBoard] = useState(Array(6).fill(Array(7).fill(null)));
   const [currentPlayer, setCurrentPlayer] = useState('Red');
+  const [winner, setWinner] = useState<string | null>(null);
 
   const handlePress = (colIndex: number) => {
+    if (winner) return;
+
     for (let rowIndex = board.length - 1; rowIndex >= 0; rowIndex--) {
       if (!board[rowIndex][colIndex]) {
         const newBoard = board.map((row, rIndex) =>
@@ -15,10 +18,54 @@ const ConnectFour: React.FC<{ navigation: any }> = ({ navigation }) => {
           })
         );
         setBoard(newBoard);
+        checkWinner(newBoard, rowIndex, colIndex);
         setCurrentPlayer(currentPlayer === 'Red' ? 'Yellow' : 'Red');
         break;
       }
     }
+  };
+
+  const checkWinner = (board: string[][], row: number, col: number) => {
+    const directions = [
+      { x: 0, y: 1 }, // vertical
+      { x: 1, y: 0 }, // horizontal
+      { x: 1, y: 1 }, // diagonal /
+      { x: 1, y: -1 }, // diagonal \
+    ];
+
+    for (const direction of directions) {
+      let count = 1;
+      let r = row + direction.x;
+      let c = col + direction.y;
+
+      while (r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] === currentPlayer) {
+        count++;
+        r += direction.x;
+        c += direction.y;
+      }
+
+      r = row - direction.x;
+      c = col - direction.y;
+      while (r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] === currentPlayer) {
+        count++;
+        r -= direction.x;
+        c -= direction.y;
+      }
+
+      if (count >= 4) {
+        setWinner(currentPlayer);
+        Alert.alert(`${currentPlayer} gana!`, 'El juego se reiniciará.', [
+          { text: 'OK', onPress: resetGame },
+        ]);
+        return;
+      }
+    }
+  };
+
+  const resetGame = () => {
+    setBoard(Array(6).fill(Array(7).fill(null)));
+    setCurrentPlayer('Red');
+    setWinner(null);
   };
 
   const renderCell = (rowIndex: number, colIndex: number) => (
@@ -48,8 +95,17 @@ const ConnectFour: React.FC<{ navigation: any }> = ({ navigation }) => {
     >
       <View style={styles.container}>
         <Text style={styles.title}>Connect Four</Text>
+        {winner && <Text style={styles.winnerText}>{winner} gana!</Text>}
         <View style={styles.board}>{renderBoard()}</View>
-        <Pressable style={styles.button} onPress={() => navigation.navigate('home')}>
+        <Pressable style={styles.button} onPress={resetGame}>
+          <Text style={styles.buttonText}>Reiniciar</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={() => {
+          setWinner(null);
+          setBoard(Array(6).fill(Array(7).fill(null)));
+          setCurrentPlayer('Red');
+          navigation.navigate('home');
+        }}>
           <Text style={styles.buttonText}>Regresar</Text>
         </Pressable>
       </View>
@@ -76,9 +132,13 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
     marginBottom: 20,
   },
+  winnerText: {
+    fontSize: 24,
+    color: '#ffffff',
+    marginBottom: 10,
+  },
   board: {
-    width: 300,
-    height: 250,
+    width: 350,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
@@ -92,6 +152,8 @@ const styles = StyleSheet.create({
     margin: 2,
     backgroundColor: '#333',
     borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   redCell: {
     backgroundColor: 'red',
@@ -100,7 +162,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'yellow',
   },
   button: {
-    marginTop: 20,
+    marginTop: 10,
     padding: 15,
     borderRadius: 10,
     backgroundColor: '#0d0d0d',
@@ -111,6 +173,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 1,
     shadowRadius: 15,
+    marginHorizontal: 5,
   },
   buttonText: {
     color: '#00ffcc',

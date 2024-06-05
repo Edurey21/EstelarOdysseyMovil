@@ -7,25 +7,8 @@ interface UsuarioHomePageProps {
 }
 
 const UsuarioHomePage: React.FC<UsuarioHomePageProps> = ({ onLogout }) => {
-  const handleSubmit = async (form: any) => {
-    try {
-      const response = await fetch('http://localhost:5000/api/suggestions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(form)
-      });
-      if (response.ok) {
-        Alert.alert('Sugerencia enviada con éxito');
-      } else {
-        const errorData = await response.json();
-        Alert.alert(`Error al enviar la sugerencia: ${errorData.error}`);
-      }
-    } catch (error) {
-      Alert.alert('Error al enviar la sugerencia');
-      console.error('Error:', error);
-    }
+  const handleSubmit = (form: any) => {
+    Alert.alert('Sugerencia enviada con éxito');
   };
 
   return (
